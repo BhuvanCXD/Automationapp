@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Onboard Application - CyberX Delta</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <style>
+        .step-container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .form-section {
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .form-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .protocol-selector {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .protocol-option {
+            padding: 1.5rem;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            background: rgba(17, 17, 21, 0.5);
+            border-radius: 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .protocol-option.selected {
+            border-color: #4361EE;
+            background: rgba(67, 97, 238, 0.15);
+            box-shadow: 0 0 20px rgba(67, 97, 238, 0.2);
+        }
+
+        .protocol-option h4 {
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar glass-morphism">
+        <h1 style="margin: 0;">CyberX Delta</h1>
+        <div class="nav-links">
+            <a href="/index.html" class="btn btn-outline">Dashboard</a>
+            <button onclick="API.logout()" class="btn btn-outline">Logout</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="step-container">
+            <header style="margin-bottom: 2rem; text-align: center;">
+                <h2>Register New Application</h2>
+                <p style="color: #94a3b8;">Provision your app into CyberX Delta Ecosystem</p>
+            </header>
+
+            <div id="alert" class="alert hidden"></div>
+
+            <form id="onboardForm" class="card glass-morphism">
+                <!-- Step 1: Basic Info -->
+                <div class="form-section active" id="step1">
+                    <div class="form-group">
+                        <label for="applicationName">Application Name</label>
+                        <input type="text" id="applicationName" name="applicationName" required
+                            placeholder="e.g. Finance Dashboard">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="identityProvider">Identity Provider</label>
+                        <select id="identityProvider" name="identityProvider" required>
+                            <option value="PingOne">PingOne</option>
+                            <option value="Okta">Okta</option>
+                            <option value="AzureAD">Azure AD</option>
+                        </select>
+                    </div>
+
+                    <label
+                        style="display: block; margin-bottom: 0.5rem; color: var(--text-muted); font-size: 0.875rem;">Protocol
+                        Selection</label>
+                    <div class="protocol-selector">
+                        <div class="protocol-option selected" id="optOIDC" onclick="setProtocol('OIDC')">
+                            <h4>OIDC</h4>
+                            <p style="font-size: 0.75rem; color: var(--text-muted);">OAuth2 based OpenID Connect</p>
+                        </div>
+                        <div class="protocol-option" id="optSAML" onclick="setProtocol('SAML')">
+                            <h4>SAML</h4>
+                            <p style="font-size: 0.75rem; color: var(--text-muted);">Security Assertion Markup Language
+                            </p>
+                        </div>
+                    </div>
+                    <input type="hidden" id="protocol" name="protocol" value="OIDC">
+
+                    <div class="form-group">
+                        <label for="accessType">Access Strategy</label>
+                        <select id="accessType" name="accessType" onchange="toggleGroupField()">
+                            <option value="ALL_USERS">All Users</option>
+                            <option value="GROUP">Specific Group</option>
+                        </select>
+                    </div>
+
+                    <div id="groupField" class="form-group hidden">
+                        <label for="groupName">Group Name</label>
+                        <input type="text" id="groupName" name="groupName" placeholder="e.g. app-users-grp">
+                    </div>
+
+                    <button type="button" class="btn btn-primary" style="width: 100%;" onclick="nextStep(2)">Configure
+                        Protocol Details</button>
+                </div>
+
+                <!-- Step 2: Protocol Details -->
+                <div class="form-section" id="step2">
+                    <div id="oidcFields">
+                        <div class="form-group">
+                            <label for="redirectUri">Redirect URI</label>
+                            <input type="url" id="redirectUri" name="redirectUri"
+                                placeholder="https://yourapp.com/callback">
+                        </div>
+                        <div class="form-group">
+                            <label for="postLogoutRedirectUri">Post Logout Redirect URI</label>
+                            <input type="url" id="postLogoutRedirectUri" name="postLogoutRedirectUri"
+                                placeholder="https://yourapp.com/logout">
+                        </div>
+                        <div class="form-group">
+                            <label for="scopes">Scopes (comma separated)</label>
+                            <input type="text" id="scopes" name="scopes" value="openid,profile,email">
+                        </div>
+                        <div class="form-group">
+                            <label for="grantTypes">Grant Types</label>
+                            <input type="text" id="grantTypes" name="grantTypes"
+                                value="authorization_code,refresh_token">
+                        </div>
+                    </div>
+
+                    <div id="samlFields" class="hidden">
+                        <div class="form-group">
+                            <label for="entityId">Entity ID (Audience)</label>
+                            <input type="text" id="entityId" name="entityId" placeholder="e.g. urn:example:app">
+                        </div>
+                        <div class="form-group">
+                            <label for="acsUrl">Assertion Consumer Service (ACS) URL</label>
+                            <input type="url" id="acsUrl" name="acsUrl" placeholder="https://yourapp.com/saml/acs">
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 1rem;">
+                        <button type="button" class="btn btn-outline" style="flex: 1;"
+                            onclick="nextStep(1)">Back</button>
+                        <button type="submit" class="btn btn-primary" style="flex: 2;">Provision Application</button>
+                    </div>
+                </div>
+
+                <!-- Step 3: Success -->
+                <div class="form-section" id="step3">
+                    <div style="text-align: center; padding: 2rem;">
+                        <div style="font-size: 3rem; color: var(--success); margin-bottom: 1rem;">✓</div>
+                        <h3>Application Provisioned!</h3>
+                        <p style="color: var(--text-muted); margin: 1rem 0;">Your application has been successfully
+                            integrated with PingOne.</p>
+                        <div id="resultDetails"
+                            style="text-align: left; background: var(--bg-dark); padding: 1rem; border-radius: 0.5rem; margin-top: 1rem; font-family: monospace; font-size: 0.8rem;">
+                            <!-- Details will be injected here -->
+                        </div>
+                        <a href="/index.html" class="btn btn-primary"
+                            style="margin-top: 2rem; display: inline-block;">Back to Dashboard</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="/js/api.js"></script>
+    <script>
+        function setProtocol(p) {
+            document.getElementById('protocol').value = p;
+            document.getElementById('optOIDC').classList.toggle('selected', p === 'OIDC');
+            document.getElementById('optSAML').classList.toggle('selected', p === 'SAML');
+            document.getElementById('oidcFields').classList.toggle('hidden', p !== 'OIDC');
+            document.getElementById('samlFields').classList.toggle('hidden', p !== 'SAML');
+        }
+
+        function toggleGroupField() {
+            const val = document.getElementById('accessType').value;
+            document.getElementById('groupField').classList.toggle('hidden', val !== 'GROUP');
+        }
+
+        function nextStep(step) {
+            document.querySelectorAll('.form-section').forEach(s => s.classList.remove('active'));
+            document.getElementById('step' + step).classList.add('active');
+        }
+
+        document.getElementById('onboardForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const alertDiv = document.getElementById('alert');
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData.entries());
+
+            try {
+                const result = await API.post('/api/onboard', data);
+                if (result.status === 'success') {
+                    nextStep(3);
+                    document.getElementById('resultDetails').innerHTML = `
+                        <p><strong>App:</strong> ${data.applicationName}</p>
+                        <p><strong>Protocol:</strong> ${data.protocol}</p>
+                        <p><strong>Provider:</strong> ${data.identityProvider}</p>
+                    `;
+                } else {
+                    alertDiv.textContent = result.message || 'Onboarding failed';
+                    alertDiv.className = 'alert alert-error';
+                    alertDiv.classList.remove('hidden');
+                }
+            } catch (error) {
+                alertDiv.textContent = error.message || 'Onboarding failed';
+                alertDiv.className = 'alert alert-error';
+                alertDiv.classList.remove('hidden');
+            }
+        });
+    </script>
+</body>
+
+</html>

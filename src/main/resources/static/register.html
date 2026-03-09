@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register | Cyber X Delta</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        outfit: ['Outfit', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@700;800;900&display=swap"
+        rel="stylesheet">
+    <style>
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+    </style>
+</head>
+
+<body class="w-full h-screen overflow-hidden bg-black font-sans text-white transition-opacity duration-1000">
+
+    <!-- Background Layer -->
+    <div class="absolute inset-0 z-0 overflow-hidden bg-black">
+        <div
+            class="absolute bottom-0 left-0 right-0 h-[60vh] bg-gradient-to-t from-blue-700/50 via-blue-900/20 to-transparent pointer-events-none">
+        </div>
+    </div>
+
+    <div class="relative z-10 w-full h-full flex flex-col items-center justify-center">
+
+        <div class="w-full h-full md:h-auto overflow-y-auto custom-scrollbar flex flex-col items-center py-12 px-4">
+            <!-- Main Title -->
+            <h1
+                class="text-3xl font-bold tracking-tight text-white mb-8 drop-shadow-lg text-center font-outfit uppercase">
+                Cyber X Delta
+            </h1>
+
+            <div class="w-full max-w-[450px]">
+                <div class="bg-[#111115]/80 backdrop-blur-md border border-white/5 rounded-2xl p-8 shadow-2xl">
+                    <h2 class="text-xl font-bold text-white mb-6">Create Account</h2>
+
+                    <form id="registerForm" onsubmit="handleRegister(event)" class="space-y-4">
+                        <div id="alert" class="hidden p-3 rounded text-sm mb-4"></div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="space-y-1">
+                                <label
+                                    class="text-xs font-medium text-white block uppercase opacity-70 italic tracking-widest">Username</label>
+                                <input type="text" id="username" required placeholder="Choose a username"
+                                    class="w-full bg-[#E2E2E5] border-none text-gray-900 text-sm rounded-md px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500 font-medium">
+                            </div>
+                            <div class="space-y-1">
+                                <label
+                                    class="text-xs font-medium text-white block uppercase opacity-70 italic tracking-widest">Email</label>
+                                <input type="email" id="email" required placeholder="your@email.com"
+                                    class="w-full bg-[#E2E2E5] border-none text-gray-900 text-sm rounded-md px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500 font-medium">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="space-y-1">
+                                <label
+                                    class="text-xs font-medium text-white block uppercase opacity-70 italic tracking-widest">First
+                                    Name</label>
+                                <input type="text" id="firstName" placeholder="First Name"
+                                    class="w-full bg-[#E2E2E5] border-none text-gray-900 text-sm rounded-md px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500 font-medium">
+                            </div>
+                            <div class="space-y-1">
+                                <label
+                                    class="text-xs font-medium text-white block uppercase opacity-70 italic tracking-widest">Last
+                                    Name</label>
+                                <input type="text" id="lastName" placeholder="Last Name"
+                                    class="w-full bg-[#E2E2E5] border-none text-gray-900 text-sm rounded-md px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500 font-medium">
+                            </div>
+                        </div>
+
+                        <div class="space-y-1">
+                            <label
+                                class="text-xs font-medium text-white block uppercase opacity-70 italic tracking-widest">Password</label>
+                            <input type="password" id="password" required placeholder="••••••••" minlength="8"
+                                class="w-full bg-[#E2E2E5] border-none text-gray-900 text-sm rounded-md px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500 font-medium">
+                        </div>
+
+                        <div class="space-y-1">
+                            <label
+                                class="text-xs font-medium text-white block uppercase opacity-70 italic tracking-widest">Confirm
+                                Password</label>
+                            <input type="password" id="confirmPassword" required placeholder="••••••••"
+                                class="w-full bg-[#E2E2E5] border-none text-gray-900 text-sm rounded-md px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500 font-medium">
+                        </div>
+
+                        <button type="submit" id="registerButton"
+                            class="w-full mt-4 bg-gradient-to-r from-[#4361EE] to-[#3A0CA3] hover:from-[#3A0CA3] hover:to-[#4361EE] text-white font-medium py-3 px-4 rounded-md transition-all duration-200 shadow-lg shadow-blue-500/20 flex justify-center items-center">
+                            Register
+                        </button>
+
+                        <div class="text-center mt-4">
+                            <a href="login.html"
+                                class="text-sm text-gray-400 hover:text-white transition-colors">Already have an
+                                account? Sign In</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        let csrfTokenReady = false;
+
+        window.addEventListener('load', async function () {
+            if (Utils.isAuthenticated()) {
+                window.location.href = '/index.html';
+            }
+            try {
+                await fetch(window.location.origin + '/csrf', { credentials: 'include' });
+                csrfTokenReady = true;
+            } catch (e) {
+                console.error('Failed to fetch CSRF token');
+            }
+        });
+
+        function showAlert(msg, type) {
+            const alert = document.getElementById('alert');
+            alert.textContent = msg;
+            alert.className = `p-3 rounded text-sm mb-4 ${type === 'danger' ? 'bg-red-500/20 text-red-400 border border-red-500/50' : 'bg-green-500/20 text-green-400 border border-green-500/50'}`;
+            alert.classList.remove('hidden');
+        }
+
+        async function handleRegister(event) {
+            event.preventDefault();
+
+            if (!csrfTokenReady) {
+                showAlert('Security token not ready. Please wait...', 'danger');
+                return;
+            }
+
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (password !== confirmPassword) {
+                showAlert('Passwords do not match!', 'danger');
+                return;
+            }
+
+            const btn = document.getElementById('registerButton');
+            btn.disabled = true;
+            btn.innerHTML = 'Registering...';
+
+            const userData = {
+                username: document.getElementById('username').value,
+                firstName: document.getElementById('firstName').value,
+                lastName: document.getElementById('lastName').value,
+                email: document.getElementById('email').value,
+                password: password
+            };
+
+            try {
+                const response = await API.register(userData);
+                showAlert(`Success! Account created. Redirecting...`, 'success');
+                setTimeout(() => { window.location.href = '/login.html'; }, 2000);
+            } catch (error) {
+                showAlert('Registration failed: ' + error.message, 'danger');
+                btn.disabled = false;
+                btn.innerHTML = 'Register';
+            }
+        }
+    </script>
+</body>
+
+</html>

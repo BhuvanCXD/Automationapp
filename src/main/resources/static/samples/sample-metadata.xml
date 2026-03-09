@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EntityDescriptor entityID="https://example-idp.local" xmlns="urn:oasis:names:tc:SAML:2.0:metadata">
+  <IDPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
+    <SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://example-idp.local/sso"/>
+    <KeyDescriptor use="signing">
+      <KeyInfo xmlns="http://www.w3.org/2000/09/xmldsig#">
+        <X509Data>
+          <X509Certificate>MIIDdzCCAl+gAwIBAgIEb1Xq6TANBgkqhkiG9w0BAQsFADBvMQswCQYDVQQGEwJV
+          UzELMAkGA1UECAwCTkMxEDAOBgNVBAcMB0NoYXJsZXMxFjAUBgNVBAoMDU15Q29t
+          cGFueSBJbmMxGzAZBgNVBAMMEmV4YW1wbGUtaWRwLmxvY2FsMB4XDTIxMDIwMTAw
+          MDAwMFoXDTIyMDIwMTAwMDAwMFowbzELMAkGA1UEBhMCVVMxCzAJBgNVBAgMAk5D
+          MRAwDgYDVQQHDAdDaGFybGVzMRYwFAYDVQQKDA1NeUNvbXBhbnkgSW5jMRswGQYD
+          VQQDDBJleGFtcGxlLWlkcC5sb2NhbDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCC
+          AQoCggEBALe3x3kEJDoQ8sVbQ2J5sLz1Zk5qgq3yW8mZkz6Kq9Kc4m0Kk2aQ==</X509Certificate>
+        </X509Data>
+      </KeyInfo>
+    </KeyDescriptor>
+  </IDPSSODescriptor>
+</EntityDescriptor>

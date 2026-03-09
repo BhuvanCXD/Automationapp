@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E2E Registration Test - CyberxDelta</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .test-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+        }
+
+        .console-log {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            font-family: monospace;
+            font-size: 0.85rem;
+            max-height: 400px;
+            overflow-y: auto;
+            margin-top: 1rem;
+        }
+
+        .log-entry {
+            margin: 0.5rem 0;
+            padding: 0.25rem;
+            border-left: 3px solid var(--primary-color);
+            padding-left: 0.75rem;
+        }
+
+        .log-entry.success {
+            border-left-color: var(--success-color);
+            color: var(--success-color);
+        }
+
+        .log-entry.error {
+            border-left-color: var(--danger-color);
+            color: var(--danger-color);
+        }
+
+        .log-entry.info {
+            border-left-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .request-payload {
+            background-color: rgba(6, 182, 212, 0.1);
+            border: 1px solid var(--primary-color);
+            border-radius: 0.25rem;
+            padding: 0.5rem;
+            margin: 0.5rem 0;
+            font-size: 0.8rem;
+        }
+
+        .response-payload {
+            background-color: rgba(16, 185, 129, 0.1);
+            border: 1px solid var(--success-color);
+            border-radius: 0.25rem;
+            padding: 0.5rem;
+            margin: 0.5rem 0;
+            font-size: 0.8rem;
+        }
+
+        button {
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>E2E Registration Test</h1>
+        <p style="color: var(--text-secondary);">This page demonstrates the full registration flow with console logging.</p>
+
+        <div class="card">
+            <h2 class="card-title">Test Registration</h2>
+            <p>Click the button below to run an end-to-end registration test with full logging.</p>
+            <button class="btn btn-primary" onclick="runRegistrationTest()">Start Test</button>
+            <button class="btn btn-secondary" onclick="clearLogs()" style="margin-left: 0.5rem;">Clear Logs</button>
+        </div>
+
+        <div class="card">
+            <h2 class="card-title">Console Output</h2>
+            <div class="console-log" id="logConsole"></div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        // Store original console.log
+        const origLog = console.log;
+        const origError = console.error;
+
+        // Intercept console logs
+        function logToConsole(message, type = 'info') {
+            const logEl = document.getElementById('logConsole');
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type}`;
+            entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            logEl.appendChild(entry);
+            logEl.scrollTop = logEl.scrollHeight;
+            
+            // Also log to browser console
+            if (type === 'error') {
+                origError(message);
+            } else {
+                origLog(message);
+            }
+        }
+
+        function clearLogs() {
+            document.getElementById('logConsole').innerHTML = '';
+        }
+
+        async function runRegistrationTest() {
+            clearLogs();
+            logToConsole('=== Registration E2E Test Started ===', 'info');
+            logToConsole('Generating unique test credentials...', 'info');
+
+            // Generate unique credentials
+            const timestamp = Math.floor(Date.now() / 1000).toString();
+            const uniqueId = timestamp.slice(-4);
+            const testUser = {
+                username: `e2e_user_${uniqueId}`,
+                firstName: 'Test',
+                lastName: 'User',
+                email: `e2etest${uniqueId}@example.com`,
+                password: 'TestPassword123'
+            };
+
+            logToConsole(`Username: ${testUser.username}`, 'info');
+            logToConsole(`Email: ${testUser.email}`, 'info');
+            logToConsole(`Name: ${testUser.firstName} ${testUser.lastName}`, 'info');
+
+            // Display request payload
+            logToConsole('Request Payload:', 'info');
+            const requestPayloadDiv = document.createElement('div');
+            requestPayloadDiv.className = 'request-payload';
+            requestPayloadDiv.innerHTML = `<pre>${JSON.stringify(testUser, null, 2)}</pre>`;
+            document.getElementById('logConsole').appendChild(requestPayloadDiv);
+
+            logToConsole('Sending POST request to /api/register...', 'info');
+
+            try {
+                // Make the registration request
+                const response = await fetch('/api/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(testUser)
+                });
+
+                logToConsole(`Response Status: ${response.status} ${response.statusText}`, 'info');
+                logToConsole(`Response Headers:`, 'info');
+                for (const [key, value] of response.headers) {
+                    logToConsole(`  ${key}: ${value}`, 'info');
+                }
+
+                const responseBody = await response.json();
+
+                if (response.ok) {
+                    logToConsole('✓ Registration SUCCESS', 'success');
+                    logToConsole('Response Payload:', 'success');
+                    const responsePayloadDiv = document.createElement('div');
+                    responsePayloadDiv.className = 'response-payload';
+                    responsePayloadDiv.innerHTML = `<pre>${JSON.stringify(responseBody, null, 2)}</pre>`;
+                    document.getElementById('logConsole').appendChild(responsePayloadDiv);
+
+                    logToConsole(`User "${testUser.username}" registered successfully!`, 'success');
+                    logToConsole('You can now login with these credentials:', 'success');
+                    logToConsole(`  Username: ${testUser.username}`, 'success');
+                    logToConsole(`  Password: ${testUser.password}`, 'success');
+                } else {
+                    logToConsole('✗ Registration FAILED', 'error');
+                    logToConsole('Error Response:', 'error');
+                    const errorPayloadDiv = document.createElement('div');
+                    errorPayloadDiv.className = 'request-payload';
+                    errorPayloadDiv.innerHTML = `<pre>${JSON.stringify(responseBody, null, 2)}</pre>`;
+                    document.getElementById('logConsole').appendChild(errorPayloadDiv);
+                }
+
+                logToConsole('=== Test Completed ===', 'info');
+            } catch (error) {
+                logToConsole(`✗ Network Error: ${error.message}`, 'error');
+                logToConsole('Stack trace:', 'error');
+                logToConsole(error.stack, 'error');
+                logToConsole('=== Test Failed ===', 'error');
+            }
+        }
+
+        // Intercept fetch to log requests/responses
+        const origFetch = window.fetch;
+        window.fetch = function(...args) {
+            const [resource, config] = args;
+            if (resource.includes('/api/register')) {
+                logToConsole(`Fetch initiated: ${config.method} ${resource}`, 'info');
+            }
+            return origFetch.apply(this, args);
+        };
+    </script>
+</body>
+</html>
