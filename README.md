@@ -16,18 +16,22 @@ Before running this project, ensure you have the following installed:
 
 ---
 
-## 🛠️ Configuration
+## 🛠️ Configuration (Required)
 
-The project is configured using `src/main/resources/application.properties`. 
-Before running the project, update the PingOne credentials with your actual PingOne environment details:
+**Before running the project, you MUST configure your PingOne credentials.** 
+
+Open `src/main/resources/application.properties` and add your specific PingOne details:
+1. **Environment ID** (`pingone.environment-id`)
+2. **Worker App Client ID** (`pingone.client-id`)
+3. **Worker App Client Secret** (`pingone.client-secret`)
 
 ```properties
 # PingOne API Settings
-pingone.api.base-url=https://api.pingone.com/v1
-pingone.api.token-url=https://auth.pingone.com/<ENV-ID>/as/token
-pingone.api.client-id=<YOUR-PINGONE-APP-CLIENT-ID>
-pingone.api.client-secret=<YOUR-PINGONE-APP-CLIENT-SECRET>
-pingone.api.environment-id=<YOUR-ENV-ID>
+pingone.base-url=https://api.pingone.com/v1
+pingone.environment-id="YOUR_ENVIRONMENT_ID_HERE"
+pingone.auth-url=https://auth.pingone.com/YOUR_ENVIRONMENT_ID_HERE/as/token
+pingone.client-id="YOUR_CLIENT_ID_HERE"
+pingone.client-secret="YOUR_CLIENT_SECRET_HERE"
 ```
 
 > **Note:** The database handles automatic creation using an in-memory SQL database (H2). Data is not preserved after shutting down the application.
