@@ -20,11 +20,33 @@ const App: React.FC = () => {
     setShowRegister(false);
   };
 
+  const getCSRFToken = (): string => {
+    const name = 'XSRF-TOKEN';
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) {
+      return parts.pop()?.split(';').shift() || '';
+    }
+    return '';
+  };
+
   const handleLogout = () => {
     fetch('/logout', { 
       method: 'POST',
-      credentials: 'include' 
-    }).then(() => {
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-XSRF-TOKEN': getCSRFToken(),
+      }
+    })
+    .then(response => {
+      if (response.ok || response.status === 200) {
+        setUser(null);
+        setShowRegister(false);
+      }
+    })
+    .catch(() => {
+      // Logout on client side even if server request fails
       setUser(null);
       setShowRegister(false);
     });
@@ -36,12 +58,20 @@ const App: React.FC = () => {
       {/* Background Layer */}
       <CyberBackground />
 
-      <div className={`relative z-10 w-full h-full flex flex-col ${!user ? 'items-center justify-center' : ''}`}>
+      {/* Top Left Logo (Visible on Dashboard) */}
+      {user && (
+         <div className="absolute top-6 left-6 z-20 flex items-center gap-2 animate-fade-in">
+            <div className="w-8 h-8 rounded bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center font-bold text-white">C</div>
+            <span className="font-bold tracking-tight text-lg">Cyber</span>
+         </div>
+      )}
+
+      <div className="relative z-10 w-full h-full flex flex-col items-center justify-center">
         
         {!user ? (
           <div className="w-full flex flex-col items-center pt-12 md:pt-0">
              {/* Main Title - Only visible on Login */}
-            <h1 className="text-lg font-bold tracking-tight text-white mb-12 drop-shadow-lg text-center px-4">
+            <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-white mb-12 drop-shadow-lg text-center px-4">
               Cyber X Delta
             </h1>
             
@@ -56,7 +86,7 @@ const App: React.FC = () => {
                   <LoginForm onLogin={handleLogin} />
                   <button
                     onClick={() => setShowRegister(true)}
-                    className="text-sm text-blue-400 hover:text-blue-300 transition-colors"
+                    className="text-sm text-cyan-400 hover:text-cyan-300 transition-colors font-bold uppercase tracking-wide"
                   >
                     Don't have an account? Register here
                   </button>
@@ -70,6 +100,13 @@ const App: React.FC = () => {
 
       </div>
 
+      <style>{`
+        @keyframes fade-in {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        .animate-fade-in { animation: fade-in 0.6s ease-in; }
+      `}</style>
     </div>
   );
 };

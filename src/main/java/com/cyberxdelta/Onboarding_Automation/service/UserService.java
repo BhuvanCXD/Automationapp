@@ -24,9 +24,14 @@ public class UserService {
     public User registerUser(RegisterRequest request) {
         log.info("Registering new user: {}", request.getUsername());
 
-        // Check if user exists
+        // Check if username already exists
         if (userRepository.existsByUsername(request.getUsername())) {
             throw new PingOneApiException("Username already exists");
+        }
+
+        // Check if email already exists
+        if (request.getEmail() != null && userRepository.existsByEmail(request.getEmail())) {
+            throw new PingOneApiException("Email address is already in use. Please use a different email.");
         }
 
         // Create new user

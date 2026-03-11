@@ -78,7 +78,7 @@
             <div class="flex-1 space-y-2">
                 <button onclick="setView('list')"
                     class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 group bg-[#f4f4f5] text-black font-semibold shadow-md shadow-white/5 active"
-                    id="nav-home">
+                    id="nav-list">
                     <i data-lucide="layout-grid" class="w-5 h-5 shrink-0"></i>
                     <span class="text-sm tracking-wide sidebar-text">Home</span>
                 </button>
@@ -321,6 +321,8 @@
             Utils.logout();
             window.location.href = '/login.html';
         }
+        // expose alias in case other scripts refer to logout globally
+        window.logout = logout;
     </script>
     <!-- Details Modal -->
     <div id="details-modal"

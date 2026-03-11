@@ -15,4 +15,7 @@ public class SamlAppResponseDto {
     private String entityId;
     private String details;
     private String signOnUrl; // Add signOnUrl field
+    private String applicationId;
+    private String samlMetadata;
+    private String idpConfiguration;
 }

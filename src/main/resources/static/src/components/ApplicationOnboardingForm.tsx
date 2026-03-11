@@ -117,10 +117,21 @@ export const ApplicationOnboardingForm: React.FC<ApplicationOnboardingFormProps>
         acsUrl: form.acsUrl || null,
       };
 
-      const response = await fetch('/api/onboard', {
+      const getCSRFToken = (): string => {
+        const name = 'XSRF-TOKEN';
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) {
+          return parts.pop()?.split(';').shift() || '';
+        }
+        return '';
+      };
+
+      const response = await fetch('/api/assets', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'X-XSRF-TOKEN': getCSRFToken(),
         },
         body: JSON.stringify(payload),
         credentials: 'include',

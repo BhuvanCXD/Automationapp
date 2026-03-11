@@ -17,7 +17,8 @@ import {
   Trash2,
   Terminal,
   Sun,
-  Moon
+  Moon,
+  LogOut
 } from 'lucide-react';
 import { ApplicationTypeSelector } from './ApplicationTypeSelector';
 import { OAuthConfiguration } from './OAuthConfiguration';
@@ -194,10 +195,18 @@ export const Dashboard: React.FC<DashboardProps> = ({ username, onLogout }) => {
          isSidebarCollapsed ? 'w-[calc(100%-5rem)]' : 'w-[calc(100%-16rem)]'
        } ${isDarkMode ? 'bg-[#020617]/90 border-white/5' : 'bg-white/90 border-gray-200'}`}
      >
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-4">
             <button className={`${isDarkMode ? 'text-gray-400 hover:text-white' : 'text-gray-500 hover:text-gray-900'} transition-colors relative`}>
                 <Bell size={20} />
                 <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full border-2 border-black"></span>
+            </button>
+            <button 
+              onClick={onLogout}
+              className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all ${isDarkMode ? 'text-red-400 hover:bg-red-500/10 hover:text-red-300' : 'text-red-600 hover:bg-red-50'}`}
+              title="Sign out"
+            >
+              <LogOut size={18} />
+              <span className="text-sm font-medium">Logout</span>
             </button>
             <div 
                 className={`w-9 h-9 rounded-full overflow-hidden border cursor-pointer transition-colors ${isDarkMode ? 'bg-gray-700 border-gray-600 hover:border-gray-400' : 'bg-gray-200 border-gray-300 hover:border-gray-400'}`}
@@ -337,7 +346,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ username, onLogout }) => {
     if (view === 'create') {
         return (
             <div className="h-full pt-28 flex flex-col w-full overflow-hidden">
-                 <ApplicationTypeSelector onBack={() => setView('list')} onSelect={handleTypeSelect} isDarkMode={isDarkMode} />
+                 <ApplicationTypeSelector onBack={() => setView('list')} onSelect={handleTypeSelect} />
             </div>
         );
     }

@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
+import { ArrowRight, Lock, Mail } from 'lucide-react';
 
 interface LoginFormProps {
   onLogin?: (username: string) => void;
 }
 
 export const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
-  const [username, setUsername] = useState('Shauryacyberx@gmail.com');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -16,63 +17,83 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
     setTimeout(() => {
       setIsLoading(false);
       if (onLogin) {
-        onLogin(username);
+        onLogin(username || 'User');
       }
     }, 1500);
   };
 
   return (
-    <div className="w-full max-w-[400px]">
-      <div className="bg-[#111115]/80 backdrop-blur-md border border-white/5 rounded-2xl p-8 shadow-2xl">
+    <div className="w-full max-w-md animate-fade-in">
+      <div className="bg-slate-950/80 backdrop-blur-2xl border border-white/10 rounded-3xl p-10 shadow-2xl shadow-black/50">
         
+        <div className="space-y-2 mb-10">
+          <h2 className="text-3xl font-black text-white tracking-tighter uppercase">Secure Access</h2>
+          <p className="text-sm text-slate-400 font-bold uppercase tracking-widest">Authentication Gateway</p>
+        </div>
+
         <form onSubmit={handleSubmit} className="space-y-6">
           
-          {/* Username Input */}
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-white block">
-              Username
+          {/* Email Input */}
+          <div className="space-y-3">
+            <label className="text-xs font-black text-slate-400 block uppercase tracking-widest">
+              Email Address
             </label>
-            <input
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              className="w-full bg-[#E2E2E5] border-none text-gray-900 text-sm rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500 font-medium"
-              placeholder="Enter Username"
-              required
-            />
+            <div className="relative">
+              <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-600" size={18} />
+              <input
+                type="email"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                className="w-full bg-slate-900/60 border border-white/10 text-white text-sm rounded-2xl pl-12 pr-4 py-4 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-transparent placeholder:text-slate-700 font-bold tracking-tight transition-all"
+                placeholder="your@email.com"
+                required
+              />
+            </div>
           </div>
 
           {/* Password Input */}
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-white block">
+          <div className="space-y-3">
+            <label className="text-xs font-black text-slate-400 block uppercase tracking-widest">
               Password
             </label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full bg-[#E2E2E5] border-none text-gray-900 text-sm rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500 font-medium"
-              placeholder="Enter Password"
-              required
-            />
+            <div className="relative">
+              <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-600" size={18} />
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full bg-slate-900/60 border border-white/10 text-white text-sm rounded-2xl pl-12 pr-4 py-4 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-transparent placeholder:text-slate-700 font-bold tracking-tight transition-all"
+                placeholder="••••••••"
+                required
+              />
+            </div>
           </div>
 
           {/* Login Button */}
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full mt-4 bg-gradient-to-r from-[#4361EE] to-[#3A0CA3] hover:from-[#3A0CA3] hover:to-[#4361EE] text-white font-medium py-3 px-4 rounded-md transition-all duration-200 shadow-lg shadow-blue-500/20 flex justify-center items-center"
+            className="w-full mt-8 bg-gradient-to-r from-cyan-600 to-cyan-500 hover:from-cyan-500 hover:to-cyan-600 disabled:opacity-60 text-slate-950 font-black py-4 px-6 rounded-2xl transition-all duration-300 shadow-2xl shadow-cyan-600/30 flex justify-center items-center gap-3 uppercase tracking-widest text-sm group active:scale-[0.98]"
           >
             {isLoading ? (
-              <span className="flex items-center gap-2">
-                <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                Logging in...
-              </span>
-            ) : 'Login'}
+              <>
+                <div className="w-4 h-4 border-2 border-slate-950/30 border-t-slate-950 rounded-full animate-spin" />
+                <span>Authenticating...</span>
+              </>
+            ) : (
+              <>
+                <span>Access Gateway</span>
+                <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+              </>
+            )}
           </button>
+
+          {/* Demo Hint */}
+          <div className="pt-4 text-center">
+            <p className="text-xs text-slate-500 font-bold uppercase tracking-widest">
+              Demo: Use any email and password
+            </p>
+          </div>
         </form>
 
       </div>

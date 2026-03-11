@@ -1,80 +1,405 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CyberxDelta | Secure Login</title>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | Cyber X Delta</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            fontFamily: {
-              sans: ['Inter', 'sans-serif'],
-              mono: ['JetBrains Mono', 'monospace'],
-            },
-            colors: {
-              cyber: {
-                dark: '#020617', // slate-950
-                panel: '#0f172a', // slate-900
-                border: '#1e293b', // slate-800
-                primary: '#06b6d4', // cyan-500
-                accent: '#3b82f6', // blue-500
-                success: '#10b981', // emerald-500
-                danger: '#ef4444', // red-500
-              }
-            },
-            animation: {
-              'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-              'scanline': 'scanline 8s linear infinite',
-              'blink': 'blink 1s step-end infinite',
-              'fade-in': 'fadeIn 0.5s ease-out forwards',
-            },
-            keyframes: {
-              scanline: {
-                '0%': { transform: 'translateY(-100%)' },
-                '100%': { transform: 'translateY(100%)' },
-              },
-              blink: {
-                '0%, 100%': { opacity: '1' },
-                '50%': { opacity: '0' },
-              },
-              fadeIn: {
-                '0%': { opacity: '0' },
-                '100%': { opacity: '1' },
-              }
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        outfit: ['Outfit', 'sans-serif'],
+                    }
+                }
             }
-          },
-        },
-      }
+        }
     </script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@700;800;900&display=swap"
+        rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-      body {
-        background-color: #020617;
-        color: #e2e8f0;
-      }
+        .animate-fade-in {
+            animation: fadeIn 0.3s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(4px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        .sidebar-transition {
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
     </style>
-
-<link rel="stylesheet" href="/index.css">
-
-
-
-
-
-  <script type="importmap">
-{
-  "imports": {
-    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
-    "lucide-react": "https://esm.sh/lucide-react@^0.574.0",
-    "react/": "https://esm.sh/react@^19.2.4/",
-    "react": "https://esm.sh/react@^19.2.4"
-  }
-}
-</script>
-  <script type="module" crossorigin src="/assets/index-BBSQqJNb.js"></script>
 </head>
-  <body>
-    <div id="root"></div>
+
+<body class="h-screen w-screen font-sans bg-[#09090b] text-white overflow-hidden">
+
+    <div class="flex h-full w-full">
+        <!-- Sidebar -->
+        <aside id="sidebar"
+            class="sidebar-transition hidden md:flex flex-col border-r border-white/5 py-6 px-4 h-full relative z-20 bg-[#18181b] w-64">
+            <!-- Logo -->
+            <div class="flex items-center gap-3 mb-10 px-2 logo-container">
+                <div
+                    class="w-8 h-8 rounded flex items-center justify-center shadow-lg shrink-0 bg-white shadow-white/10">
+                    <i data-lucide="square-terminal" class="text-black w-5 h-5"></i>
+                </div>
+                <span
+                    class="font-bold text-lg tracking-tight whitespace-nowrap overflow-hidden sidebar-text">CyberXDelta</span>
+            </div>
+
+            <!-- Navigation -->
+            <div class="flex-1 space-y-2">
+                <button onclick="setView('list')"
+                    class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 group bg-[#f4f4f5] text-black font-semibold shadow-md shadow-white/5 active"
+                    id="nav-home">
+                    <i data-lucide="layout-grid" class="w-5 h-5 shrink-0"></i>
+                    <span class="text-sm tracking-wide sidebar-text">Home</span>
+                </button>
+                <button onclick="setView('create-app')"
+                    class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 group text-gray-400 hover:text-white hover:bg-white/5"
+                    id="nav-create">
+                    <i data-lucide="plus" class="w-5 h-5 shrink-0"></i>
+                    <span class="text-sm tracking-wide sidebar-text">Create New App</span>
+                </button>
+                <button onclick="setView('profile')"
+                    class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 group text-gray-400 hover:text-white hover:bg-white/5"
+                    id="nav-profile">
+                    <i data-lucide="user" class="w-5 h-5 shrink-0"></i>
+                    <span class="text-sm tracking-wide sidebar-text">My Profile</span>
+                </button>
+            </div>
+
+            <!-- Bottom Settings -->
+            <div class="pt-6 mt-auto">
+                <div class="px-3 text-xs font-semibold mb-4 uppercase tracking-wider text-gray-500 sidebar-text">
+                    Settings</div>
+
+                <button
+                    class="w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 group text-gray-400 hover:text-white hover:bg-white/5">
+                    <i data-lucide="moon" class="w-5 h-5 shrink-0"></i>
+                    <span class="text-sm tracking-wide flex-1 text-left sidebar-text">Dark Mode</span>
+                    <div class="w-8 h-4 rounded-full relative transition-colors bg-blue-600 sidebar-text">
+                        <div class="absolute top-0.5 w-3 h-3 rounded-full bg-white left-[18px]"></div>
+                    </div>
+                </button>
+
+                <button
+                    class="w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 group text-gray-400 hover:text-white hover:bg-white/5">
+                    <i data-lucide="settings" class="w-5 h-5 shrink-0"></i>
+                    <span class="text-sm tracking-wide sidebar-text">Settings</span>
+                </button>
+
+                <button onclick="logout()"
+                    class="w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 group text-red-500 hover:text-red-400 hover:bg-red-500/10">
+                    <i data-lucide="log-out" class="w-5 h-5 shrink-0"></i>
+                    <span class="text-sm tracking-wide sidebar-text">Logout</span>
+                </button>
+
+
+                <button onclick="toggleSidebar()"
+                    class="w-full flex items-center justify-center mt-4 p-2 rounded-lg transition-colors text-gray-400 hover:text-white hover:bg-white/5">
+                    <i data-lucide="chevron-left" id="sidebar-toggle-icon" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main id="main-content" class="flex-1 h-full overflow-y-auto relative custom-scrollbar pb-10">
+            <!-- Header -->
+            <header
+                class="flex items-center justify-end h-16 px-8 gap-6 sticky top-0 right-0 z-30 backdrop-blur-md border-b border-white/5 bg-[#020617]/90 w-full transition-all duration-300"
+                id="main-header">
+                <div class="flex items-center gap-6">
+                    <button class="text-gray-400 hover:text-white transition-colors relative">
+                        <i data-lucide="bell" class="w-5 h-5"></i>
+                        <span
+                            class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full border-2 border-[#020617]"></span>
+                    </button>
+                    <div class="w-9 h-9 rounded-full overflow-hidden border border-gray-600 cursor-pointer hover:border-gray-400 transition-colors"
+                        onclick="logout()">
+                        <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                            alt="User" class="w-full h-full object-cover">
+                    </div>
+                </div>
+            </header>
+
+            <!-- List View -->
+            <section id="view-list" class="p-4 md:p-6 animate-fade-in max-w-[98%] mx-auto w-full">
+                <div class="space-y-4">
+                    <h3 class="text-lg font-bold mb-4 text-white">My Applications</h3>
+
+                    <!-- Toolbar -->
+                    <div
+                        class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-4 p-2 rounded-lg border border-white/5 bg-[#222225] shadow-lg">
+                        <div class="flex flex-wrap items-center gap-3 w-full md:w-auto">
+                            <div class="relative flex-grow md:flex-grow-0 md:w-80">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i data-lucide="search" class="w-4 h-4 text-gray-400"></i>
+                                </div>
+                                <input type="text" placeholder="Search"
+                                    class="text-sm rounded-md block w-full pl-10 p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium bg-white text-gray-900 placeholder-gray-500">
+                            </div>
+                            <button
+                                class="flex items-center gap-2 px-3 py-2 border border-gray-600 text-gray-300 rounded-md text-sm font-medium hover:text-white hover:border-gray-400 transition-colors">
+                                <i data-lucide="filter" class="w-3.5 h-3.5"></i>
+                                Filter
+                            </button>
+                        </div>
+                        <div class="flex items-center gap-2 ml-auto">
+                            <button
+                                class="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-300 hover:text-white">
+                                Customise columns
+                                <i data-lucide="chevron-down" class="w-3.5 h-3.5"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Table -->
+                    <div class="border border-gray-700 bg-[#18181b] rounded-lg overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse min-w-[800px]">
+                                <thead>
+                                    <tr class="border-b bg-[#27272a] border-gray-700">
+                                        <th
+                                            class="py-3 px-6 text-xs font-medium uppercase tracking-wider text-gray-300">
+                                            App Name</th>
+                                        <th
+                                            class="py-3 px-6 text-xs font-medium uppercase tracking-wider text-gray-300">
+                                            Protocol</th>
+                                        <th
+                                            class="py-3 px-6 text-xs font-medium uppercase tracking-wider text-gray-300">
+                                            Provider</th>
+                                        <th
+                                            class="py-3 px-6 text-xs font-medium uppercase tracking-wider text-gray-300">
+                                            Status</th>
+                                        <th
+                                            class="py-3 px-6 text-xs font-medium uppercase tracking-wider text-right pr-12 text-gray-300">
+                                            Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="app-table-body" class="divide-y divide-gray-700">
+                                    <!-- Dynamic content -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Profile View -->
+            <section id="view-profile" class="hidden p-4 md:p-6 animate-fade-in max-w-4xl mx-auto w-full text-white">
+                <div class="bg-[#18181b] border border-white/5 rounded-2xl overflow-hidden shadow-2xl">
+                    <div class="h-32 bg-gradient-to-r from-blue-600 to-purple-600"></div>
+                    <div class="px-8 pb-8 -mt-12">
+                        <div class="flex flex-col md:flex-row items-end gap-6 mb-8">
+                            <div
+                                class="w-24 h-24 rounded-2xl border-4 border-[#18181b] overflow-hidden bg-gray-800 shadow-xl">
+                                <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                                    alt="Avatar" class="w-full h-full object-cover">
+                            </div>
+                            <div class="flex-1 pb-1">
+                                <h2 class="text-2xl font-bold font-outfit" id="profile-display-name">Loading...</h2>
+                                <p class="text-gray-400 text-sm" id="profile-display-role">Security Administrator</p>
+                            </div>
+                            <div class="flex gap-3">
+                                <button onclick="saveProfile()"
+                                    class="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold uppercase transition-all shadow-lg shadow-blue-500/20">Update
+                                    Profile</button>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="space-y-1.5">
+                                <label
+                                    class="text-[10px] uppercase font-bold text-gray-500 tracking-wider">Username</label>
+                                <input type="text" id="profile-username" readonly
+                                    class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2.5 text-sm text-gray-400 cursor-not-allowed">
+                            </div>
+                            <div class="space-y-1.5">
+                                <label class="text-[10px] uppercase font-bold text-gray-500 tracking-wider">Email
+                                    Address</label>
+                                <input type="email" id="profile-email"
+                                    class="w-full bg-[#27272a] border border-white/10 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50">
+                            </div>
+                            <div class="space-y-1.5">
+                                <label class="text-[10px] uppercase font-bold text-gray-500 tracking-wider">First
+                                    Name</label>
+                                <input type="text" id="profile-firstname"
+                                    class="w-full bg-[#27272a] border border-white/10 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50">
+                            </div>
+                            <div class="space-y-1.5">
+                                <label class="text-[10px] uppercase font-bold text-gray-500 tracking-wider">Last
+                                    Name</label>
+                                <input type="text" id="profile-lastname"
+                                    class="w-full bg-[#27272a] border border-white/10 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50">
+                            </div>
+                        </div>
+
+                        <div class="mt-8 pt-8 border-t border-white/5 grid grid-cols-3 gap-4">
+                            <div class="p-4 rounded-xl bg-white/5 border border-white/5 flex flex-col items-center">
+                                <span class="text-gray-500 text-[10px] font-bold uppercase mb-1">Status</span>
+                                <span class="text-green-500 font-bold text-sm">Tactical-Active</span>
+                            </div>
+                            <div class="p-4 rounded-xl bg-white/5 border border-white/5 flex flex-col items-center">
+                                <span class="text-gray-500 text-[10px] font-bold uppercase mb-1">MFA</span>
+                                <span class="text-blue-400 font-bold text-sm">Protected</span>
+                            </div>
+                            <div class="p-4 rounded-xl bg-white/5 border border-white/5 flex flex-col items-center">
+                                <span class="text-gray-500 text-[10px] font-bold uppercase mb-1">Session</span>
+                                <span class="text-amber-500 font-bold text-sm">Encrypted</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Create View (Placeholder for Step 1) -->
+            <section id="view-create" class="hidden p-4 md:p-6 animate-fade-in max-w-[98%] mx-auto w-full">
+                <!-- Content will be injected by dashboard.js -->
+            </section>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+    <script src="dashboard.js"></script>
+    <script>
+        // Init Lucide
+        lucide.createIcons();
+
+        let sidebarCollapsed = false;
+        function toggleSidebar() {
+            sidebarCollapsed = !sidebarCollapsed;
+            const sidebar = document.getElementById('sidebar');
+            const header = document.getElementById('main-header');
+            const toggleIcon = document.getElementById('sidebar-toggle-icon');
+            const texts = document.querySelectorAll('.sidebar-text');
+
+            if (sidebarCollapsed) {
+                sidebar.classList.replace('w-64', 'w-20');
+                sidebar.classList.add('px-2');
+                sidebar.classList.remove('px-4');
+                toggleIcon.setAttribute('data-lucide', 'chevron-right');
+                texts.forEach(t => t.classList.add('hidden'));
+            } else {
+                sidebar.classList.replace('w-20', 'w-64');
+                sidebar.classList.add('px-4');
+                sidebar.classList.remove('px-2');
+                toggleIcon.setAttribute('data-lucide', 'chevron-left');
+                texts.forEach(t => t.classList.remove('hidden'));
+            }
+            lucide.createIcons();
+        }
+
+        function logout() {
+            Utils.logout();
+            window.location.href = '/login.html';
+        }
+        // expose alias in case other scripts refer to logout globally
+        window.logout = logout;
+    </script>
+    <!-- Details Modal -->
+    <div id="details-modal"
+        class="fixed inset-0 z-[100] hidden items-center justify-center p-4 md:p-10 backdrop-blur-xl bg-black/60 animate-fade-in">
+        <div
+            class="bg-[#18181b] border border-white/10 w-full max-w-4xl max-h-full rounded-2xl shadow-2xl flex flex-col overflow-hidden text-white">
+            <div class="p-6 border-b border-white/5 flex justify-between items-center bg-[#222225]">
+                <div class="flex items-center gap-3">
+                    <div
+                        class="w-10 h-10 rounded-xl bg-blue-600/20 border border-blue-500/30 flex items-center justify-center">
+                        <i data-lucide="shield" class="text-blue-400 w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold font-outfit" id="modal-app-name">Application Detail</h2>
+                        <p class="text-[10px] text-gray-500 uppercase font-bold tracking-widest"
+                            id="modal-app-protocol">SAML 2.0</p>
+                    </div>
+                </div>
+                <button onclick="closeDetails()"
+                    class="p-2 rounded-lg hover:bg-white/5 text-gray-400 hover:text-white transition-all">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+
+            <div class="flex-1 overflow-y-auto p-8 space-y-8 custom-scrollbar bg-[#09090b]/50">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Config Fields Component -->
+                    <div class="space-y-6" id="modal-config-container">
+                        <!-- Dynamic Fields -->
+                    </div>
+
+                    <!-- Meta Column -->
+                    <div class="space-y-6" id="modal-meta-container">
+                        <div class="p-6 rounded-2xl bg-[#18181b] border border-white/5 space-y-4">
+                            <h3 class="text-xs font-bold uppercase text-gray-500 tracking-wider">Access Control</h3>
+                            <div class="flex items-center gap-2">
+                                <span
+                                    class="px-2 py-1 rounded bg-green-500/20 text-green-500 text-[10px] font-bold uppercase"
+                                    id="modal-access-type">ALL_USERS</span>
+                                <span class="text-sm text-gray-300" id="modal-group-name"></span>
+                            </div>
+                        </div>
+
+                        <div class="p-6 rounded-2xl bg-[#18181b] border border-white/5 space-y-4">
+                            <h3 class="text-xs font-bold uppercase text-gray-500 tracking-wider">Registry Info</h3>
+                            <div class="space-y-3">
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-gray-500">Provisioned By</span>
+                                    <span class="text-gray-300 font-medium" id="modal-operator">admin</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-gray-500">Deployment Date</span>
+                                    <span class="text-gray-300 font-medium" id="modal-date">2026-03-08</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-gray-500">Health Status</span>
+                                    <span class="text-emerald-500 font-bold flex items-center gap-1">
+                                        <div class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
+                                        Active
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-6 border-t border-white/5 bg-[#222225] flex justify-end gap-3">
+                <button onclick="closeDetails()"
+                    class="px-6 py-2.5 rounded-xl border border-white/10 hover:bg-white/5 text-sm font-bold transition-all">Close
+                    Console</button>
+                <button id="modal-delete-btn"
+                    class="px-6 py-2.5 rounded-xl bg-red-600/10 border border-red-500/20 text-red-500 text-sm font-bold hover:bg-red-500 hover:text-white transition-all">Remove
+                    Broadcast</button>
+            </div>
+        </div>
+    </div>
 </body>
+
 </html>

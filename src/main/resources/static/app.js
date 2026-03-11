@@ -216,6 +216,15 @@ const Utils = {
     if (!this.isAuthenticated()) {
       window.location.href = '/login.html';
     }
+  },
+
+  // perform a logout request and clear local user state
+  logout() {
+    return API.logout()
+      .catch(() => {})
+      .finally(() => {
+        localStorage.removeItem('currentUser');
+      });
   }
 };
 

@@ -1,53 +1,173 @@
 import React, { useState } from 'react';
+import { ChevronRight, ArrowLeft } from 'lucide-react';
 
 interface OAuthConfigurationProps {
   onBack: () => void;
-  onContinue: () => void;
-  isDarkMode?: boolean;
+  onContinue: (data: any) => void;
 }
 
-export const OAuthConfiguration: React.FC<OAuthConfigurationProps> = ({ onBack, onContinue, isDarkMode = true }) => {
+export const OAuthConfiguration: React.FC<OAuthConfigurationProps> = ({ onBack, onContinue }) => {
+  const [appName, setAppName] = useState('');
   const [clientId, setClientId] = useState('');
   const [clientSecret, setClientSecret] = useState('');
+  const [discoveryUrl, setDiscoveryUrl] = useState('');
+  const [redirectUri, setRedirectUri] = useState('');
   
-  // State for checkboxes
-  const [grantTypes, setGrantTypes] = useState({
-    authCode: false,
-    implicit: false,
-    clientCreds: false,
-    refreshToken: false
-  });
-
   const [scopes, setScopes] = useState({
-    openid: false,
-    profile: false,
-    email: false,
+    openid: true,
+    profile: true,
+    email: true,
     groups: false
   });
 
-  const handleGrantChange = (key: keyof typeof grantTypes) => {
-    setGrantTypes(prev => ({ ...prev, [key]: !prev[key] }));
-  };
-
-  const handleScopeChange = (key: keyof typeof scopes) => {
+  const toggleScope = (key: keyof typeof scopes) => {
     setScopes(prev => ({ ...prev, [key]: !prev[key] }));
   };
 
-  return (
-    <div className="w-full max-w-[380px] animate-fade-in">
-      <div className={`backdrop-blur-xl border rounded-2xl p-6 shadow-2xl ${isDarkMode ? 'bg-[#1e2330]/90 border-white/10' : 'bg-white border-gray-200'}`}>
-        
-        <h2 className={`text-lg font-bold mb-6 text-center tracking-tight ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-          OAuth Application
-        </h2>
+  const handleContinue = () => {
+    if (!appName || !clientId || !discoveryUrl || !redirectUri) {
+      alert('Please fill in all required fields');
+      return;
+    }
+    onContinue({
+      type: 'OAuth',
+      name: appName,
+      clientId,
+      clientSecret,
+      discoveryUrl,
+      redirectUri,
+      scopes: Object.entries(scopes).filter(([_, v]) => v).map(([k]) => k)
+    });
+  };
 
-        <div className="space-y-5">
+  return (
+    <div className="w-full max-w-4xl animate-fade-in">
+      <button 
+        onClick={onBack}
+        className="mb-8 flex items-center gap-2 text-slate-400 hover:text-white transition-colors font-bold text-sm uppercase tracking-widest"
+      >
+        <ArrowLeft size={16} />
+        Back to Selection
+      </button>
+
+      <div className="space-y-8">
+        <div className="space-y-2">
+          <h2 className="text-3xl font-black text-white uppercase tracking-tighter">OAuth 2.0 Configuration</h2>
+          <p className="text-slate-400 text-sm font-bold uppercase tracking-widest">Configure OpenID Connect / OAuth 2.0 provider</p>
+        </div>
+
+        <div className="bg-slate-900/50 border border-white/5 rounded-3xl p-10 space-y-8">
           
-          {/* Client ID */}
-          <div className="space-y-1">
-            <label className={`text-xs font-bold ml-1 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-              Client ID *
-            </label>
+          {/* Application Name */}
+          <div>
+            <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Application Name *</label>
+            <input 
+              type="text"
+              value={appName}
+              onChange={(e) => setAppName(e.target.value)}
+              placeholder="e.g., Cloud Integration"
+              className="w-full bg-slate-950/60 border border-white/5 rounded-2xl px-6 py-3 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500/50 placeholder:text-slate-700 font-bold"
+            />
+          </div>
+
+          {/* Discovery URL */}
+          <div>
+            <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Discovery URL *</label>
+            <input 
+              type="text"
+              value={discoveryUrl}
+              onChange={(e) => setDiscoveryUrl(e.target.value)}
+              placeholder="https://provider.com/.well-known/openid-configuration"
+              className="w-full bg-slate-950/60 border border-white/5 rounded-2xl px-6 py-3 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500/50 placeholder:text-slate-700 font-bold"
+            />
+          </div>
+
+          {/* Client ID & Secret */}
+          <div className="grid grid-cols-2 gap-6">
+            <div>
+              <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Client ID *</label>
+              <input 
+                type="text"
+                value={clientId}
+                onChange={(e) => setClientId(e.target.value)}
+                placeholder="Client ID"
+                className="w-full bg-slate-950/60 border border-white/5 rounded-2xl px-6 py-3 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500/50 placeholder:text-slate-700 font-bold"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Client Secret</label>
+              <input 
+                type="password"
+                value={clientSecret}
+                onChange={(e) => setClientSecret(e.target.value)}
+                placeholder="Client Secret"
+                className="w-full bg-slate-950/60 border border-white/5 rounded-2xl px-6 py-3 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500/50 placeholder:text-slate-700 font-bold"
+              />
+            </div>
+          </div>
+
+          {/* Redirect URI */}
+          <div>
+            <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Redirect URI *</label>
+            <input 
+              type="text"
+              value={redirectUri}
+              onChange={(e) => setRedirectUri(e.target.value)}
+              placeholder="https://yourapp.com/callback"
+              className="w-full bg-slate-950/60 border border-white/5 rounded-2xl px-6 py-3 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500/50 placeholder:text-slate-700 font-bold"
+            />
+          </div>
+
+          {/* Scopes */}
+          <div className="border-t border-white/5 pt-8">
+            <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-6">Requested Scopes</label>
+            <div className="grid grid-cols-2 gap-4">
+              {['openid', 'profile', 'email', 'groups'].map((scope) => (
+                <button
+                  key={scope}
+                  onClick={() => toggleScope(scope as keyof typeof scopes)}
+                  className={`p-4 rounded-2xl border-2 transition-all text-left ${
+                    scopes[scope as keyof typeof scopes]
+                      ? 'bg-cyan-500/10 border-cyan-500/50 text-cyan-400'
+                      : 'bg-slate-950/40 border-white/5 text-slate-400 hover:border-white/10'
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className={`w-5 h-5 rounded border-2 flex items-center justify-center ${
+                      scopes[scope as keyof typeof scopes]
+                        ? 'bg-cyan-500 border-cyan-500'
+                        : 'border-white/20'
+                    }`}>
+                      {scopes[scope as keyof typeof scopes] && <span className="text-white text-xs">✓</span>}
+                    </div>
+                    <span className="font-bold uppercase tracking-wide text-sm">{scope}</span>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="flex gap-6">
+          <button 
+            onClick={onBack}
+            className="flex-1 bg-slate-900/60 hover:bg-slate-900 border border-white/5 text-white font-black py-4 rounded-2xl transition-all uppercase tracking-widest"
+          >
+            Back
+          </button>
+          <button 
+            onClick={handleContinue}
+            className="flex-1 bg-cyan-600 hover:bg-cyan-500 text-white font-black py-4 rounded-2xl transition-all shadow-2xl shadow-cyan-600/30 uppercase tracking-widest flex items-center justify-center gap-3 group"
+          >
+            Continue Setup
+            <ChevronRight size={18} className="group-hover:translate-x-1 transition-transform" />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
             <input
               type="text"
               value={clientId}

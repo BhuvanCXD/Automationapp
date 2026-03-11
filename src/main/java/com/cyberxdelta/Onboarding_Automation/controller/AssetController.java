@@ -9,6 +9,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -34,6 +36,17 @@ public class AssetController {
         List<Asset> assets = assetRepository.findByUsername(username);
 
         return ResponseEntity.ok(assets);
+    }
+
+    @PostMapping
+    public ResponseEntity<Asset> createAsset(@RequestBody Asset asset, Authentication authentication) {
+        if (authentication == null) {
+            return ResponseEntity.status(401).build();
+        }
+        String username = authentication.getName();
+        asset.setUsername(username);
+        Asset saved = assetRepository.save(asset);
+        return ResponseEntity.ok(saved);
     }
 
     @GetMapping("/{id}")
